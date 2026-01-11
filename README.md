@@ -1,0 +1,2 @@
+# debian_remote_hibernate
+局域网内通过web远程控制Debian系统进入休眠
