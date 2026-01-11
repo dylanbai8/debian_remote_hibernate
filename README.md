@@ -5,3 +5,33 @@
 
 <img width="835" height="537" alt="image" src="https://github.com/user-attachments/assets/ab81fbcc-c3df-4849-b91d-633a82c845e3" />
 
+```
+go version
+sudo apt install golang -y
+
+sudo apt install -y \
+  libgl1-mesa-dev \
+  xorg-dev \
+  libxcursor-dev \
+  libxrandr-dev \
+  libxinerama-dev \
+  libxi-dev \
+  libxxf86vm-dev \
+  libx11-dev \
+  libxfixes-dev \
+  libxrender-dev \
+  libxkbcommon-dev \
+  libwayland-dev \
+  libegl1-mesa-dev
+
+go mod init linux-remote-control
+go get fyne.io/fyne/v2
+
+go mod tidy
+
+go build -o linux-remote-control main.go
+```
+
+注意需要为 hibernate.sh 赋予root权限。
+
+
