@@ -133,13 +133,13 @@ func startServer() {
 		exec.Command("fuser", "-k", port+"/tcp").Run()
 		mux := http.NewServeMux()
 		mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-			fmt.Fprintf(w, `<html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><style>body{text-align:center;padding-top:50px;font-family:sans-serif;background-color:#f4f4f9;}.container{max-width:400px;margin:0 auto;padding:20px;background:white;border-radius:20px;box-shadow:0 4px 6px rgba(0,0,0,0.1);}.btn{width:100%%;height:100px;font-size:24px;background:#505050;color:white;border:none;border-radius:15px;cursor:pointer;}</style></head><body><div class="container"><h2>远程控制</h2><button class="btn" onclick="if(confirm('休眠电脑？'))window.location.href='/do'">休眠电脑</button></div></body></html>`)
+			fmt.Fprintf(w, `<html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><style>body{text-align:center;padding-top:50px;font-family:sans-serif;background-color:#f4f4f9;}.container{max-width:400px;margin:0 auto;padding:20px;background:white;border-radius:20px;box-shadow:0 4px 6px rgba(0,0,0,0.1);}.btn{width:100%%;height:100px;font-size:24px;background:#e74c3c;color:white;border:none;border-radius:15px;cursor:pointer;}</style><script>function doAction(){if(confirm("确定要立即休眠电脑吗？")){window.location.href="/do";}}</script></head><body><div class="container"><h2>Linux 远程控制</h2><button class="btn" onclick="doAction()">立即休眠电脑</button></div></body></html>`)
 		})
 		mux.HandleFunc("/do", func(w http.ResponseWriter, r *http.Request) {
 			if time.Since(lastActionTime) < 3*time.Second { return }
 			lastActionTime = time.Now()
 			w.Header().Set("Content-Type", "text/html; charset=utf-8")
-			fmt.Fprintf(w, `<html><body><script>alert("指令已发送");window.location.href="/";</script></body></html>`)
+			fmt.Fprintf(w, `<html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><style>body{text-align:center;padding-top:50px;font-family:sans-serif;background-color:#f4f4f9;}.container{max-width:400px;margin:0 auto;padding:20px;background:white;border-radius:20px;box-shadow:0 4px 6px rgba(0,0,0,0.1);}.success{color:#27ae60;font-size:48px;margin-bottom:20px;}.msg{font-size:20px;color:#7f8c8d;}</style></head><body><div class="container"><div class="success">✓</div><div class="msg">指令已发送，电脑即将休眠。</div></div><script>setTimeout(()=>{window.location.href="/";},500);</script></body></html>`)
 			go func() { time.Sleep(1 * time.Second); exec.Command("sh", path).Run() }()
 		})
 		serverInstance = &http.Server{Addr: ":" + port, Handler: mux}
@@ -209,7 +209,7 @@ func main() {
 		widget.NewFormItem("端口", portEntry),
 	)
 
-	startBtn := newGrayButton("更新服务", func() {
+	startBtn := newGrayButton("更新配置", func() {
 		config.Port, config.ScriptPath = portEntry.Text, scriptEntry.Text
 		saveConfig()
 		startServer()
@@ -217,7 +217,7 @@ func main() {
 		go func() { time.Sleep(2 * time.Second); tipLabel.SetText("") }()
 	})
 
-	exitBtn := newGrayButton("退出", func() { myApp.Quit() })
+	exitBtn := newGrayButton("退出程序", func() { myApp.Quit() })
 	bottomButtons := container.New(layout.NewGridLayout(2), startBtn, exitBtn)
 	
 	content := container.NewVBox(form, statusLabel, tipLabel, bottomButtons)
